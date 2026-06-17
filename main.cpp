@@ -96,6 +96,106 @@ int main()
         }
         cout << "遭遇了怪物: " << currentMonster.getName() << " ! " << endl;
 
+        // 戰鬥階段
+        while (player->isAlive() && currentMonster.isAlive())
+        {
+            player->showStatus();
+            currentMonster.showInfo();
+
+            int action;
+            cout << "\n請選擇行動: (1) 普通攻擊  (2) 技能1  (3) 技能2\n> ";
+            cin >> action;
+
+            bool actionSuccess = false;
+
+            if (action == 1)
+            {
+                player->attack(currentMonster);
+                actionSuccess = true;
+            }
+            else if (action == 2)
+            {
+                actionSuccess = player->useSkill(0, currentMonster);
+            }
+            else if (action == 3)
+            {
+                actionSuccess = player->useSkill(1, currentMonster);
+            }
+            else
+            {
+                cout << "輸入錯誤，請重新選擇！" << endl;
+            }
+
+            if (!actionSuccess)
+            {
+                continue; 
+            }
+
+            if (currentMonster.isAlive())
+            {
+                currentMonster.attack(*player);
+            }
+        }
+
+        if (!player->isAlive())
+        {
+            cout << "\n【遊戲結束】你被 " << currentMonster.getName() << " 擊敗了，勇者的傳說到此為止..." << endl;
+            delete player;
+            return 0;
+        }
+
+        cout << "\n戰鬥勝利 ! 擊殺了 " << currentMonster.getName() << " ! " << endl;
         
+        if (stage == monsters.size() - 1)
+        {
+            cout << "\n恭喜 "<< user_name <<" !!! 你擊敗了終極 Boss 哥吉拉，成為了真正的英雄!!!" << endl;
+            break;
+        }
+
+        player->addGold(currentMonster.getRewardGold());
+        cout << "獲得金幣: " << currentMonster.getRewardGold() << " (目前金幣: " << player->getGold() << ")" << endl;
+
+        // 商店購買模式
+        cout << "\n======== 進入商店 ========" << endl;
+        while (true)
+        {
+            cout << "\n[目前持有金幣]: " << player->getGold() << endl;
+            cout << "--- 販售物品 ---" << endl;
+            for (int i = 0; i < shopItems.size(); i++)
+            {
+                cout << "(" << i + 1 << ") ";
+                shopItems[i].setQuantity(player->getItemQuantity(shopItems[i].getName()));
+                shopItems[i].showInfo();
+            }
+            cout << "(0) 結束購買並出發" << endl;
+            
+            int buyChoice;
+            cout << "請輸入購買選項 > ";
+            cin >> buyChoice;
+
+            if (buyChoice == 0)
+            {
+                break;
+            }
+            else if (buyChoice >= 1 && buyChoice <= 3)
+            {
+                Item& selectedItem = shopItems[buyChoice - 1];
+                if (player->getGold() >= selectedItem.getCost())
+                {
+                    player->deductGold(selectedItem.getCost());
+                    player->buyItem(selectedItem.getName());
+                    cout << ">> 購買【" << selectedItem.getName() << "】成功！" << endl;
+                }
+                else
+                {
+                    cout << ">> [錯誤] 金幣不足！" << endl;
+                }
+            }
+            else
+            {
+                cout << ">> [錯誤] 無效的選項！" << endl;
+            }
+        }
+
     return(0);
 }
