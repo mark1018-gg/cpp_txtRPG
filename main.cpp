@@ -216,7 +216,7 @@ int main()
             cout << "【隨機事件】天空突然下起滂沱大雨！你全身濕透，忍不住打了個大噴嚏。糟糕，感冒了！" << endl;
             player->reduceMaxHp(10);
         } 
-        else if (randomEvent <= 50)
+        else if (randomEvent <= 80)
         {
             cout << "【隨機事件】你在草叢裡看到金光閃閃的東西... 哇！是前人遺留的錢包！(獲得 30 金幣)" << endl;
             player->addGold(30);
