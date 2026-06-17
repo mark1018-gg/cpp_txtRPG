@@ -96,5 +96,6 @@ int main()
         }
         cout << "遭遇了怪物: " << currentMonster.getName() << " ! " << endl;
 
+        
     return(0);
 }
