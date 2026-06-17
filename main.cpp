@@ -197,5 +197,88 @@ int main()
             }
         }
 
+        //隨機事件
+        cout << "\n======== 旅途突發事件 ========" << endl;
+        int randomEvent = rand() % 100 + 1; 
+
+        if (randomEvent <= 10)
+        {
+            cout << "【隨機事件】一陣怪風吹過，一個小偷以迅雷不及掩耳的速度掠過！你趕緊檢查包包..." << endl;
+            player->loseRandomItem();
+        } 
+        else if (randomEvent <= 35)
+        {
+            cout << "【隨機事件】你一邊走路一邊欣賞風景，結果「撲通」一聲被樹根絆倒，摔了個狗吃屎！" << endl;
+            player->takeDirectDamage(5);
+        } 
+        else if (randomEvent <= 50)
+        {
+            cout << "【隨機事件】天空突然下起滂沱大雨！你全身濕透，忍不住打了個大噴嚏。糟糕，感冒了！" << endl;
+            player->reduceMaxHp(10);
+        } 
+        else if (randomEvent <= 50)
+        {
+            cout << "【隨機事件】你在草叢裡看到金光閃閃的東西... 哇！是前人遺留的錢包！(獲得 30 金幣)" << endl;
+            player->addGold(30);
+
+            cout << "\n======== 幸運加碼商店 ========" << endl;
+            cout << "「嘿嘿，看來你手頭變寬裕了！」剛才那位商人竟然躲在旁邊的樹叢裡，又鑽出來向你招手。" << endl;
+            
+            while (true)
+            {
+                cout << "\n[目前持有金幣]: " << player->getGold() << endl;
+                cout << "--- 販售物品 ---" << endl;
+                for (int i = 0; i < shopItems.size(); i++)
+                {
+                    cout << "(" << i + 1 << ") ";
+                    shopItems[i].setQuantity(player->getItemQuantity(shopItems[i].getName()));
+                    shopItems[i].showInfo();
+                }
+                cout << "(0) 拒絕推銷並繼續前進" << endl;
+                
+                int buyChoice;
+                cout << "請輸入購買選項 > ";
+                cin >> buyChoice;
+
+                if (buyChoice == 0)
+                {
+                    break;
+                } 
+                else if (buyChoice >= 1 && buyChoice <= 3)
+                {
+                    Item& selectedItem = shopItems[buyChoice - 1];
+                    if (player->getGold() >= selectedItem.getCost())
+                    {
+                        player->deductGold(selectedItem.getCost());
+                        player->buyItem(selectedItem.getName());
+                        cout << ">> 購買【" << selectedItem.getName() << "】成功！" << endl;
+                    }
+                    else
+                    {
+                        cout << ">> [錯誤] 金幣不足！" << endl;
+                    }
+                }
+                else
+                {
+                    cout << ">> [錯誤] 無效的選項！" << endl;
+                }
+            }
+        } 
+        else
+        {
+            cout << "【隨機事件】一路上風平浪靜，你哼著歌平安地繼續前進。" << endl;
+        }
+
+        player->useItem();
+        
+        cout << "\n(請按 Enter 鍵繼續前進...)" << endl;
+        cin.ignore(10000, '\n'); 
+        cin.get();               
+
+        cout << ">>> 準備進入下一輪 <<<" << endl;
+    }
+
+    delete player;
+
     return(0);
 }
