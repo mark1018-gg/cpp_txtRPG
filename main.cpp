@@ -49,8 +49,7 @@ int main()
         player->addSkill(Skill("迷幻法陣", 70, 35));
     }
 
-    player->initInventory();//初始化item
-
-
+    player->initInventory();// 初始化item
+    
     return(0);
 }
